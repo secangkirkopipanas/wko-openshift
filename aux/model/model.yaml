@@ -1,0 +1,34 @@
+domainInfo:
+  AdminUserName: "@@SECRET:__weblogic-credentials__:username@@"
+  AdminPassword: "@@SECRET:__weblogic-credentials__:password@@"
+topology:
+  Name: "@@ENV:DOMAIN_UID@@"
+  AdminServerName: "@@PROP:AdminServer.name@@"
+  DomainVersion: 12.2.1.4.0
+  Cluster:
+    "app1-cluster":
+      DynamicServers:
+        ServerNamePrefix: "@@PROP:ManagedServer.serverNamePrefix@@"
+        CalculatedListenPorts: false
+        MaximumDynamicServerCount: "@@PROP:ManagedServer.maxDynamicServerCount@@"
+        ServerTemplate: "@@PROP:ManagedServer.serverTemplateName@@"
+        DynamicClusterSize: "@@PROP:ManagedServer.maxDynamicServerCount@@"
+  Server:
+    "@@PROP:AdminServer.name@@":
+      ListenPort: "@@PROP:AdminServer.listenPort@@"
+      SSL:
+        ListenPort: "@@PROP:AdminServer.SSL.listenPort@@"
+  ServerTemplate:
+    "@@PROP:ManagedServer.serverTemplateName@@":
+      ListenPort: "@@PROP:ServerTemplate.server-template-1.listenPort@@"
+      Cluster: "app1-cluster"
+      JTAMigratableTarget:
+        Cluster: "app1-cluster"
+      SSL:
+        ListenPort: "@@PROP:ServerTemplate.server-template-1.SSL.listenPort@@"
+appDeployments:
+  Application:
+    quickstart:
+      SourcePath: wlsdeploy/applications/quickstart
+      ModuleType: war
+      Target: "app1-cluster"

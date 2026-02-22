@@ -1,0 +1,95 @@
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: ai-be-dev-t3
+#   labels:
+#     weblogic.clusterName: cluster-1
+#     weblogic.domainName: ai-be-dev
+#     weblogic.domainUID: ai-be-dev
+#     environment: dev
+# spec:
+#   selector:
+#     weblogic.clusterName: cluster-1
+#     weblogic.createdByOperator: "true"
+#     weblogic.domainUID: ai-be-dev
+#   ports:
+#     - port: 7105
+#       targetPort: 7105
+#       protocol: TCP
+
+# ---
+# apiVersion: route.openshift.io/v1
+# kind: Route
+# metadata:
+#   labels:
+#     serviceType: CLUSTER
+#     weblogic.clusterName: cluster-1
+#     weblogic.createdByOperator: "true"
+#     weblogic.domainName: ai-be-dev
+#     weblogic.domainUID: ai-be-dev
+#     environment: dev
+#   name: ai-be-dev-cluster-1
+# spec:
+#   port:
+#     targetPort: default
+#   tls:
+#     insecureEdgeTerminationPolicy: Allow
+#     termination: edge
+#   to:
+#     kind: Service
+#     name: ai-be-dev-cluster-1
+
+# ---
+# apiVersion: route.openshift.io/v1
+# kind: Route
+# metadata:
+#   labels:
+#     serviceType: SERVER
+#     weblogic.domainName: ai-be-dev
+#     weblogic.domainUID: ai-be-dev
+#     weblogic.serverName: admin-server
+#     environment: dev
+#   name: ai-be-dev-admin-server
+# spec:
+#   port:
+#     targetPort: internal-t3
+#   to:
+#     kind: Service
+#     name: ai-be-dev-admin-server
+
+# ---
+# apiVersion: route.openshift.io/v1
+# kind: Route
+# metadata:
+#   labels:
+#     serviceType: SERVER
+#     weblogic.domainName: ai-be-dev
+#     weblogic.domainUID: ai-be-dev
+#     weblogic.serverName: admin-server
+#     environment: dev
+#   name: ai-be-dev-admin-server-console
+# spec:
+#   host: ai-be-dev-console.apps.dsu.ocp.psa
+#   path: /console
+#   port:
+#     targetPort: internal-t3
+#   to:
+#     kind: Service
+#     name: ai-be-dev-admin-server
+
+# ---
+# apiVersion: route.openshift.io/v1
+# kind: Route
+# metadata:
+#   labels:
+#     weblogic.domainName: ai-be-dev
+#     weblogic.domainUID: ai-be-dev
+#     managed-server: "true"
+#     environment: dev
+#   name: ai-be-dev-managed-server1
+# spec:
+#   port:
+#     targetPort: default
+#   to:
+#     kind: Service
+#     name: ai-be-dev-managed-server1

@@ -1,0 +1,4 @@
+namespace: app1
+resources:
+  - ../../base/
+  - domain.yaml
